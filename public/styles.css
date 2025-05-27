@@ -1,10 +1,15 @@
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  margin: 30px;
+  margin: 30px auto;       /* center horizontally */
   background-color: #f9f9f9;
   color: #333;
   line-height: 1.6;
+  max-width: 65vw;         /* 65% of viewport width */
+  padding: 0 20px;         /* horizontal padding */
+  min-width: 320px;        /* minimum width for small screens */
+  box-sizing: border-box;  /* include padding in width */
 }
+
 
 section {
   margin-bottom: 40px;
@@ -60,10 +65,13 @@ button:active {
   background-color: #1e40af;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 768px) {
   body {
-    margin: 15px;
+    max-width: 90vw; /* wider on smaller screens */
+    margin: 15px auto;
+    padding: 0 10px;
   }
+
 
   section {
     padding: 15px 20px;

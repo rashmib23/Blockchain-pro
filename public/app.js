@@ -2,7 +2,7 @@ let web3;
 let productContract;
 let accounts;
 
-const productContractAddress = "0xd64dF1A56865CED80f1058b1556fF38F7dADe8f1";
+const productContractAddress = "0xEf89826ef225ee2f948589f051778e650FC0893D";
 
 const productContractABI =  [
     {
