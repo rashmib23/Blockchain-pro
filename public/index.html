@@ -1,38 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Product Evaluation Management</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <title>Product Review DApp</title>
+  <script src="https://cdn.jsdelivr.net/npm/web3@1.10.0/dist/web3.min.js"></script>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    input, textarea { display: block; margin: 10px 0; width: 300px; }
+    .product { border: 1px solid #ccc; padding: 10px; margin-bottom: 15px; }
+    img { max-width: 300px; max-height: 200px; display: block; }
+    .rating { font-weight: bold; }
+    .price { color: green; font-weight: bold; }
+  </style>
 </head>
 <body>
-  <h1>Product Evaluation Management System</h1>
+  <h1>Product Review System</h1>
 
-  <section>
-    <h2>Add Product</h2>
-    <input id="productName" placeholder="Product Name" />
-    <input id="productIPFS" placeholder="Product IPFS Hash" />
-    <button onclick="addProduct()">Add Product</button>
-  </section>
+  <h2>Add Product</h2>
+  <input id="productName" placeholder="Name" />
+  <textarea id="productDesc" placeholder="Description"></textarea>
+  <input id="productPrice" type="number" placeholder="Price in USD" />
+  <input type="file" id="productImage" />
+  <button onclick="addProduct()">Add Product</button>
 
-  <section>
-    <h2>Add Comment</h2>
-    <input id="commentProductId" placeholder="Product ID" />
-    <input id="commentText" placeholder="Comment Text" />
-    <input id="commentRating" placeholder="Rating (1-5)" type="number" min="1" max="5" />
-    <input id="commentIPFS" placeholder="Comment IPFS Hash" />
-    <input id="commentKeyword" placeholder="Keyword" />
-    <button onclick="addComment()">Add Comment</button>
-  </section>
+  <h2>All Products</h2>
+  <div id="products"></div>
 
-  <section>
-    <h2>All Products</h2>
-    <button onclick="displayAllProducts()">Load All Products</button>
-    <div id="searchResults"></div>
-  </section>
-
-
-  <script src="https://cdn.jsdelivr.net/npm/web3@1.8.2/dist/web3.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
