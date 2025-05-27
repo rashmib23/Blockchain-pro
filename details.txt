@@ -1,0 +1,409 @@
+Got it! You want a **simple, minimal but complete implementation** of the blockchain-based **Product Evaluation Management System** based on the paper, using:
+
+* **Ganache CLI** (local Ethereum blockchain)
+* **MetaMask** (wallet to interact with the contracts)
+* Basic Solidity smart contracts (ProductContract and AuxiliaryContract)
+* A minimal frontend to add products, add comments/reviews, and search by keyword
+* Use IPFS hash storage in contracts (simulate or hardcode IPFS hash)
+* Keep it **simple** with only necessary features (no complex incentive logic, just basics)
+
+---
+
+# Here's a **simple full example**:
+
+---
+
+## 1. **File Structure**
+
+```
+pem-blockchain/
+├── contracts/
+│   ├── ProductContract.sol
+│   └── AuxiliaryContract.sol
+├── migrations/
+│   └── 1_deploy_contracts.js
+├── public/
+│   ├── index.html
+│   ├── app.js
+│   └── styles.css
+├── package.json
+├── truffle-config.js
+└── README.md
+```
+
+---
+
+## 2. **Smart Contracts**
+
+### contracts/ProductContract.sol
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract ProductContract {
+    struct Comment {
+        address commenter;
+        string commentText;
+        uint8 rating; // 1-5
+        string ipfsHash;
+    }
+
+    struct Product {
+        string name;
+        string ipfsHash; // product info stored on IPFS (simulate with a string)
+        Comment[] comments;
+    }
+
+    Product[] public products;
+
+    // keyword => list of comment indexes (simulate simple keyword mapping)
+    mapping(string => uint[]) public keywordIndex;
+
+    event ProductAdded(uint productId, string name, string ipfsHash);
+    event CommentAdded(uint productId, address commenter, string commentText, uint8 rating);
+
+    function addProduct(string memory _name, string memory _ipfsHash) public {
+        products.push();
+        uint productId = products.length - 1;
+        Product storage p = products[productId];
+        p.name = _name;
+        p.ipfsHash = _ipfsHash;
+        emit ProductAdded(productId, _name, _ipfsHash);
+    }
+
+    function addComment(uint _productId, string memory _commentText, uint8 _rating, string memory _ipfsHash, string memory _keyword) public {
+        require(_rating >= 1 && _rating <= 5, "Rating must be 1-5");
+        Product storage p = products[_productId];
+        p.comments.push(Comment(msg.sender, _commentText, _rating, _ipfsHash));
+        uint commentIndex = p.comments.length - 1;
+        keywordIndex[_keyword].push(_productId * 1000 + commentIndex); // simple way to store ref
+        emit CommentAdded(_productId, msg.sender, _commentText, _rating);
+    }
+
+    function getProduct(uint _productId) public view returns (string memory, string memory, uint) {
+        Product storage p = products[_productId];
+        return (p.name, p.ipfsHash, p.comments.length);
+    }
+
+    function getComment(uint _productId, uint _commentIndex) public view returns (address, string memory, uint8, string memory) {
+        Comment storage c = products[_productId].comments[_commentIndex];
+        return (c.commenter, c.commentText, c.rating, c.ipfsHash);
+    }
+
+    function searchByKeyword(string memory _keyword) public view returns (uint[] memory) {
+        return keywordIndex[_keyword];
+    }
+
+    function totalProducts() public view returns (uint) {
+        return products.length;
+    }
+}
+```
+
+---
+
+### contracts/AuxiliaryContract.sol
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract AuxiliaryContract {
+    // Simple reward mechanism (dummy)
+
+    mapping(address => uint) public rewards;
+
+    event RewardGiven(address user, uint amount);
+
+    function giveReward(address _user, uint _amount) public {
+        rewards[_user] += _amount;
+        emit RewardGiven(_user, _amount);
+    }
+
+    function getReward(address _user) public view returns (uint) {
+        return rewards[_user];
+    }
+}
+```
+
+---
+
+## 3. **Migration Script**
+
+### migrations/1\_deploy\_contracts.js
+
+```javascript
+const ProductContract = artifacts.require("ProductContract");
+const AuxiliaryContract = artifacts.require("AuxiliaryContract");
+
+module.exports = function (deployer) {
+  deployer.deploy(ProductContract);
+  deployer.deploy(AuxiliaryContract);
+};
+```
+
+---
+
+## 4. **Truffle Configuration**
+
+### truffle-config.js
+
+```js
+module.exports = {
+  networks: {
+    development: {
+      host: "127.0.0.1",
+      port: 8545,       // Ganache CLI default RPC port
+      network_id: "*",
+    },
+  },
+  compilers: {
+    solc: {
+      version: "0.8.0",
+    },
+  },
+};
+```
+
+---
+
+## 5. **Frontend**
+
+### public/index.html
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Product Evaluation Management</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <h1>Product Evaluation Management System</h1>
+
+  <section>
+    <h2>Add Product</h2>
+    <input id="productName" placeholder="Product Name" />
+    <input id="productIPFS" placeholder="Product IPFS Hash" />
+    <button onclick="addProduct()">Add Product</button>
+  </section>
+
+  <section>
+    <h2>Add Comment</h2>
+    <input id="commentProductId" placeholder="Product ID" />
+    <input id="commentText" placeholder="Comment Text" />
+    <input id="commentRating" placeholder="Rating (1-5)" type="number" min="1" max="5" />
+    <input id="commentIPFS" placeholder="Comment IPFS Hash" />
+    <input id="commentKeyword" placeholder="Keyword" />
+    <button onclick="addComment()">Add Comment</button>
+  </section>
+
+  <section>
+    <h2>Search Comments by Keyword</h2>
+    <input id="searchKeyword" placeholder="Keyword" />
+    <button onclick="searchKeyword()">Search</button>
+    <div id="searchResults"></div>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/web3@1.8.2/dist/web3.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
+```
+
+---
+
+### public/app.js
+
+```javascript
+let web3;
+let productContract;
+
+const productContractAddress = "REPLACE_WITH_DEPLOYED_ADDRESS";
+
+const productContractABI = [ /* ABI from compilation - simplified version below */ ];
+
+// Minimal ABI - Replace this by compiling your contract and copying ABI here
+// For demonstration, use truffle build or remix and paste ABI here.
+
+async function init() {
+  if (window.ethereum) {
+    web3 = new Web3(window.ethereum);
+    try {
+      await window.ethereum.request({ method: "eth_requestAccounts" });
+      console.log("Connected to MetaMask");
+    } catch (error) {
+      alert("Please allow MetaMask connection");
+      return;
+    }
+  } else {
+    alert("MetaMask not detected. Please install MetaMask.");
+    return;
+  }
+
+  productContract = new web3.eth.Contract(productContractABI, productContractAddress);
+}
+
+async function addProduct() {
+  const name = document.getElementById("productName").value;
+  const ipfsHash = document.getElementById("productIPFS").value;
+  const accounts = await web3.eth.getAccounts();
+
+  productContract.methods.addProduct(name, ipfsHash)
+    .send({ from: accounts[0] })
+    .then(() => alert("Product added successfully!"))
+    .catch(err => alert(err.message));
+}
+
+async function addComment() {
+  const productId = document.getElementById("commentProductId").value;
+  const commentText = document.getElementById("commentText").value;
+  const rating = parseInt(document.getElementById("commentRating").value);
+  const ipfsHash = document.getElementById("commentIPFS").value;
+  const keyword = document.getElementById("commentKeyword").value;
+  const accounts = await web3.eth.getAccounts();
+
+  productContract.methods.addComment(productId, commentText, rating, ipfsHash, keyword)
+    .send({ from: accounts[0] })
+    .then(() => alert("Comment added successfully!"))
+    .catch(err => alert(err.message));
+}
+
+async function searchKeyword() {
+  const keyword = document.getElementById("searchKeyword").value;
+  const resultsDiv = document.getElementById("searchResults");
+  resultsDiv.innerHTML = "Loading...";
+
+  try {
+    const results = await productContract.methods.searchByKeyword(keyword).call();
+
+    if (results.length === 0) {
+      resultsDiv.innerHTML = "No comments found for this keyword.";
+      return;
+    }
+
+    let html = "<ul>";
+    for (let ref of results) {
+      // Decode productId and commentIndex
+      const productId = Math.floor(ref / 1000);
+      const commentIndex = ref % 1000;
+
+      // Get comment details
+      const comment = await productContract.methods.getComment(productId, commentIndex).call();
+
+      html += `<li>
+        <strong>Product ID:</strong> ${productId}<br />
+        <strong>Commenter:</strong> ${comment[0]}<br />
+        <strong>Comment:</strong> ${comment[1]}<br />
+        <strong>Rating:</strong> ${comment[2]}<br />
+        <strong>Comment IPFS:</strong> ${comment[3]}<br />
+      </li><hr/>`;
+    }
+    html += "</ul>";
+    resultsDiv.innerHTML = html;
+  } catch (error) {
+    resultsDiv.innerHTML = "Error fetching comments: " + error.message;
+  }
+}
+
+window.onload = init;
+```
+
+---
+
+### public/styles.css
+
+```css
+body {
+  font-family: Arial, sans-serif;
+  margin: 30px;
+}
+
+section {
+  margin-bottom: 40px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+input {
+  margin: 5px 0;
+  padding: 8px;
+  width: 300px;
+}
+
+button {
+  padding: 10px 15px;
+  cursor: pointer;
+}
+```
+
+---
+
+## 6. **How to Run**
+
+1. **Install dependencies**
+
+```bash
+npm init -y
+npm install truffle web3
+```
+
+2. **Start Ganache CLI**
+
+```bash
+ganache-cli
+```
+
+3. **Compile and deploy contracts**
+
+```bash
+npx truffle compile
+npx truffle migrate --network development
+```
+
+4. **Update `productContractAddress` in `app.js`**
+
+* After migration, Truffle will show deployed contract addresses.
+* Copy `ProductContract` address and paste it in `public/app.js` replacing `"REPLACE_WITH_DEPLOYED_ADDRESS"`.
+
+5. **Serve frontend**
+
+* Use any simple server, e.g.,
+
+```bash
+npx serve public
+```
+
+or
+
+```bash
+python3 -m http.server 8080 --directory public
+```
+
+6. **Connect MetaMask**
+
+* Setup MetaMask to connect to your Ganache CLI RPC (usually `http://127.0.0.1:8545`)
+* Import Ganache CLI accounts into MetaMask using their private keys.
+
+7. **Use the dApp**
+
+* Add products (simulate IPFS hash with any string)
+* Add comments with ratings and keywords
+* Search comments by keyword
+
+---
+
+## Summary
+
+* Simple Solidity contracts for products, comments, keyword indexing
+* Basic frontend to add products/comments and search
+* Use Ganache CLI + MetaMask only (no IPFS integration in frontend for simplicity; just simulate IPFS hashes)
+* No complicated incentive logic (AuxiliaryContract has dummy reward function)
+* Easy to extend and improve
+
+---
+
+If you want, I can also prepare a **README.md** with instructions and help you compile ABI or generate the full code package! Just ask.

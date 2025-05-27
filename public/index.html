@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Product Evaluation Management</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <h1>Product Evaluation Management System</h1>
+
+  <section>
+    <h2>Add Product</h2>
+    <input id="productName" placeholder="Product Name" />
+    <input id="productIPFS" placeholder="Product IPFS Hash" />
+    <button onclick="addProduct()">Add Product</button>
+  </section>
+
+  <section>
+    <h2>Add Comment</h2>
+    <input id="commentProductId" placeholder="Product ID" />
+    <input id="commentText" placeholder="Comment Text" />
+    <input id="commentRating" placeholder="Rating (1-5)" type="number" min="1" max="5" />
+    <input id="commentIPFS" placeholder="Comment IPFS Hash" />
+    <input id="commentKeyword" placeholder="Keyword" />
+    <button onclick="addComment()">Add Comment</button>
+  </section>
+
+  <section>
+    <h2>All Products</h2>
+    <button onclick="displayAllProducts()">Load All Products</button>
+    <div id="searchResults"></div>
+  </section>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/web3@1.8.2/dist/web3.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
