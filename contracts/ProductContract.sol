@@ -94,13 +94,11 @@ contract ProductContract {
     }
 
     // Delete product (admin only)
-    function deleteProduct(uint256 _productId) public onlyAdmin {
-        require(_productId < productCount, "Invalid productId");
-        require(products[_productId].exists, "Product already deleted");
-
-        products[_productId].exists = false;
-        emit ProductDeleted(_productId);
+    function deleteProduct(uint256 productId) public {
+    require(products[productId].exists, "Product does not exist");
+    delete products[productId];
     }
+
 
     // Get all existing (non-deleted) products
     function getAllProducts()

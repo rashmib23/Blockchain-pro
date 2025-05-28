@@ -2260,12 +2260,12 @@
     "1748421943956": {
       "events": {},
       "links": {},
-      "address": "0x23d4d11b2653F4847fB4EEfb0BE24ee14AAb5a1F",
-      "transactionHash": "0xecc0eac2106d5f4d20db395f6ffc6d90d22e48c32a726293658b6bf36e5071f7"
+      "address": "0x45F9C4440fbf2Ff4ae86675Ac1E97E7Acd47225B",
+      "transactionHash": "0x810afb46cbd973fe8ff444dfedc924c5c99524589ffe653783c2280a408128d0"
     }
   },
   "schemaVersion": "3.4.16",
-  "updatedAt": "2025-05-28T10:47:39.987Z",
+  "updatedAt": "2025-05-28T11:10:49.182Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
