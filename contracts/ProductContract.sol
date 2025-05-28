@@ -23,10 +23,28 @@ contract ProductContract {
     uint256 public productCount = 0;
     mapping(uint256 => Product) public products;
 
+    address public adminAddress;
+
     event ProductAdded(uint256 id, string name);
     event CommentAdded(uint256 productId, address commenter, string text, uint8 rating);
+    event ProductDeleted(uint256 productId);
 
-    function addProduct(string memory _name, string memory _description, string memory _imageBase64,uint256 _price) public {
+    modifier onlyAdmin() {
+        require(msg.sender == adminAddress, "Only admin can call this");
+        _;
+    }
+
+    constructor() {
+        adminAddress = msg.sender;  // The deployer is admin
+    }
+
+    // Add a new product
+    function addProduct(
+        string memory _name,
+        string memory _description,
+        string memory _imageBase64,
+        uint256 _price
+    ) public {
         Product storage newProduct = products[productCount];
         newProduct.id = productCount;
         newProduct.name = _name;
@@ -34,30 +52,72 @@ contract ProductContract {
         newProduct.imageBase64 = _imageBase64;
         newProduct.creator = msg.sender;
         newProduct.price = _price;
+
         emit ProductAdded(productCount, _name);
         productCount++;
     }
 
-    function addComment(uint256 _productId, string memory _text, uint8 _rating) public {
-        require(_rating >= 1 && _rating <= 5, "Rating must be between 1 and 5");
+    // Add a comment and rating to a product
+    function addComment(
+        uint256 _productId,
+        string memory _text,
+        uint8 _rating
+    ) public {
+        require(_rating >= 1 && _rating <= 5, "Rating must be 1-5");
+        require(_productId < productCount, "Invalid productId");
+
         Product storage product = products[_productId];
         product.comments.push(Comment(msg.sender, _text, _rating));
         product.totalRating += _rating;
         product.ratingCount++;
+
         emit CommentAdded(_productId, msg.sender, _text, _rating);
     }
 
-    function getComments(uint256 _productId) public view returns (Comment[] memory) {
-        return products[_productId].comments;
+    // Get all comments for a product
+    function getComments(uint256 _productId)
+        public
+        view
+        returns (
+            address[] memory commenters,
+            string[] memory texts,
+            uint8[] memory ratings
+        )
+    {
+        require(_productId < productCount, "Invalid productId");
+
+        Product storage product = products[_productId];
+        uint256 len = product.comments.length;
+
+        commenters = new address[](len);
+        texts = new string[](len);
+        ratings = new uint8[](len);
+
+        for (uint256 i = 0; i < len; i++) {
+            commenters[i] = product.comments[i].commenter;
+            texts[i] = product.comments[i].text;
+            ratings[i] = product.comments[i].rating;
+        }
     }
 
+    // Get average rating of a product
     function getAverageRating(uint256 _productId) public view returns (uint256) {
+        require(_productId < productCount, "Invalid productId");
+
         Product storage product = products[_productId];
         if (product.ratingCount == 0) return 0;
         return product.totalRating / product.ratingCount;
     }
 
-    // ➕ NEW: Get All Products (excluding nested comments)
+    // Delete product (admin only)
+    function deleteProduct(uint256 _productId) public onlyAdmin {
+        require(_productId < productCount, "Invalid productId");
+
+        delete products[_productId];
+        emit ProductDeleted(_productId);
+    }
+
+    // Get all products (excluding comments)
     function getAllProducts()
         public
         view
@@ -87,7 +147,7 @@ contract ProductContract {
             imageBase64s[i] = p.imageBase64;
             creators[i] = p.creator;
             avgRatings[i] = p.ratingCount == 0 ? 0 : (p.totalRating / p.ratingCount);
-            prices[i] = p.price; 
+            prices[i] = p.price;
         }
     }
 }
