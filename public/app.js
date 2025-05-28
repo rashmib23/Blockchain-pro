@@ -3,280 +3,10 @@ let productContract;
 let accounts;
 let currentUserRole = ""; // 'admin' or 'user'
 
-const productContractAddress = "0x891bc71732cbBe88464f891061926f247b0d9d55";
-const productContractABI =[
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "productId",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "commenter",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "string",
-          "name": "text",
-          "type": "string"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint8",
-          "name": "rating",
-          "type": "uint8"
-        }
-      ],
-      "name": "CommentAdded",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "id",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "string",
-          "name": "name",
-          "type": "string"
-        }
-      ],
-      "name": "ProductAdded",
-      "type": "event"
-    },
-    {
-      "inputs": [],
-      "name": "productCount",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "products",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "id",
-          "type": "uint256"
-        },
-        {
-          "internalType": "string",
-          "name": "name",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "description",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "imageBase64",
-          "type": "string"
-        },
-        {
-          "internalType": "address",
-          "name": "creator",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "price",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "totalRating",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "ratingCount",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "string",
-          "name": "_name",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "_description",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "_imageBase64",
-          "type": "string"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_price",
-          "type": "uint256"
-        }
-      ],
-      "name": "addProduct",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_productId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "string",
-          "name": "_text",
-          "type": "string"
-        },
-        {
-          "internalType": "uint8",
-          "name": "_rating",
-          "type": "uint8"
-        }
-      ],
-      "name": "addComment",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_productId",
-          "type": "uint256"
-        }
-      ],
-      "name": "getComments",
-      "outputs": [
-        {
-          "components": [
-            {
-              "internalType": "address",
-              "name": "commenter",
-              "type": "address"
-            },
-            {
-              "internalType": "string",
-              "name": "text",
-              "type": "string"
-            },
-            {
-              "internalType": "uint8",
-              "name": "rating",
-              "type": "uint8"
-            }
-          ],
-          "internalType": "struct ProductContract.Comment[]",
-          "name": "",
-          "type": "tuple[]"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_productId",
-          "type": "uint256"
-        }
-      ],
-      "name": "getAverageRating",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "inputs": [],
-      "name": "getAllProducts",
-      "outputs": [
-        {
-          "internalType": "uint256[]",
-          "name": "ids",
-          "type": "uint256[]"
-        },
-        {
-          "internalType": "string[]",
-          "name": "names",
-          "type": "string[]"
-        },
-        {
-          "internalType": "string[]",
-          "name": "descriptions",
-          "type": "string[]"
-        },
-        {
-          "internalType": "string[]",
-          "name": "imageBase64s",
-          "type": "string[]"
-        },
-        {
-          "internalType": "address[]",
-          "name": "creators",
-          "type": "address[]"
-        },
-        {
-          "internalType": "uint256[]",
-          "name": "avgRatings",
-          "type": "uint256[]"
-        },
-        {
-          "internalType": "uint256[]",
-          "name": "prices",
-          "type": "uint256[]"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    }
-  ]; // ← Paste full ABI here after compiling ProductContract.sol
+const productContractAddress =  "0x90d43b78bCD79BD41459e7D331C2564042498e8F"
+const productContractABI = [
+  // 🔁 Paste full ABI from ProductContract.sol compilation output here
+];
 
 window.addEventListener('load', async () => {
   if (window.ethereum) {
@@ -295,7 +25,6 @@ window.addEventListener('load', async () => {
   }
 });
 
-// Show login page after selecting role
 function showLogin(role) {
   currentUserRole = role;
   document.getElementById("roleSelectionSection").style.display = "none";
@@ -305,14 +34,12 @@ function showLogin(role) {
   document.getElementById("password").value = "";
 }
 
-// Cancel login, back to role selection
 function cancelLogin() {
   currentUserRole = "";
   document.getElementById("loginSection").style.display = "none";
   document.getElementById("roleSelectionSection").style.display = "block";
 }
 
-// Login function with simple hardcoded check
 function login() {
   const username = document.getElementById("username").value.trim();
   const password = document.getElementById("password").value.trim();
@@ -324,7 +51,7 @@ function login() {
       alert("Invalid admin credentials");
     }
   } else if (currentUserRole === "user") {
-    if (username && password) { // For demo, accept any non-empty user login
+    if (username && password) {
       showDashboard();
     } else {
       alert("Invalid user credentials");
@@ -332,7 +59,6 @@ function login() {
   }
 }
 
-// Show dashboard after login
 function showDashboard() {
   document.getElementById("loginSection").style.display = "none";
   document.getElementById("roleSelectionSection").style.display = "none";
@@ -349,15 +75,12 @@ function showDashboard() {
   loadProducts();
 }
 
-// Logout function
 function logout() {
   currentUserRole = "";
   document.getElementById("adminSection").style.display = "none";
   document.getElementById("productListSection").style.display = "none";
   document.getElementById("logoutSection").style.display = "none";
   document.getElementById("loginSection").style.display = "none";
-
-  // Go back to role selection
   document.getElementById("roleSelectionSection").style.display = "block";
 }
 
@@ -425,7 +148,7 @@ async function loadProducts() {
       }
       if (currentUserRole === "admin") {
         content += `
-          <button onclick="deleteProduct(${Number(id)})" style="color: red; margin-top: 10px;">Delete Product</button>
+          <button onclick="deleteProduct(${id})" style="color: red; margin-top: 10px;">Delete Product</button>
         `;
       }
 
@@ -456,29 +179,13 @@ async function addComment(id) {
 }
 
 async function loadComments(id) {
-  console.log("Loading comments for product id:", id);
-  const productId = Number(id);
   try {
-    const result = await productContract.methods.getComments(productId).call();
-    console.log("Comments result:", result);
-
-    const commenters = result[0];
-    const texts = result[1];
-    const ratings = result[2];
-
-    const container = document.getElementById(`comments-${productId}`);
-    if (!commenters.length) {
-      container.innerHTML = "<strong>No reviews yet.</strong>";
-      return;
-    }
-
-    let html = "<strong>Reviews:</strong><br>";
-
-    for (let i = 0; i < commenters.length; i++) {
-      html += `<p><b>${commenters[i]}</b>: ${texts[i]} [Rating: ${ratings[i]}]</p>`;
-    }
-
-    container.innerHTML = html;
+    const comments = await productContract.methods.getComments(id).call();
+    const container = document.getElementById(`comments-${id}`);
+    container.innerHTML = "<strong>Reviews:</strong><br>";
+    comments.forEach(c => {
+      container.innerHTML += `<p><b>${c.commenter}</b>: ${c.text} [Rating: ${c.rating}]</p>`;
+    });
   } catch (error) {
     console.error("Failed to load comments:", error);
   }
@@ -490,7 +197,7 @@ async function deleteProduct(id) {
   try {
     await productContract.methods.deleteProduct(id).send({ from: accounts[0] });
     alert("Product deleted successfully.");
-    await loadProducts();  // Refresh product list
+    await loadProducts();
   } catch (error) {
     alert("Failed to delete product. See console for details.");
     console.error(error);

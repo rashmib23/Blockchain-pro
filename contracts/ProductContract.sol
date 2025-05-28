@@ -18,6 +18,7 @@ contract ProductContract {
         uint256 totalRating;
         uint256 ratingCount;
         Comment[] comments;
+        bool exists;  // NEW FIELD to track deleted products
     }
 
     uint256 public productCount = 0;
@@ -52,6 +53,7 @@ contract ProductContract {
         newProduct.imageBase64 = _imageBase64;
         newProduct.creator = msg.sender;
         newProduct.price = _price;
+        newProduct.exists = true;
 
         emit ProductAdded(productCount, _name);
         productCount++;
@@ -65,6 +67,7 @@ contract ProductContract {
     ) public {
         require(_rating >= 1 && _rating <= 5, "Rating must be 1-5");
         require(_productId < productCount, "Invalid productId");
+        require(products[_productId].exists, "Product does not exist");
 
         Product storage product = products[_productId];
         product.comments.push(Comment(msg.sender, _text, _rating));
@@ -75,34 +78,15 @@ contract ProductContract {
     }
 
     // Get all comments for a product
-    function getComments(uint256 _productId)
-        public
-        view
-        returns (
-            address[] memory commenters,
-            string[] memory texts,
-            uint8[] memory ratings
-        )
-    {
-        require(_productId < productCount, "Invalid productId");
-
-        Product storage product = products[_productId];
-        uint256 len = product.comments.length;
-
-        commenters = new address[](len);
-        texts = new string[](len);
-        ratings = new uint8[](len);
-
-        for (uint256 i = 0; i < len; i++) {
-            commenters[i] = product.comments[i].commenter;
-            texts[i] = product.comments[i].text;
-            ratings[i] = product.comments[i].rating;
-        }
+    function getComments(uint256 _productId) public view returns (Comment[] memory) {
+        require(products[_productId].exists, "Product does not exist");
+        return products[_productId].comments;
     }
 
     // Get average rating of a product
     function getAverageRating(uint256 _productId) public view returns (uint256) {
         require(_productId < productCount, "Invalid productId");
+        require(products[_productId].exists, "Product does not exist");
 
         Product storage product = products[_productId];
         if (product.ratingCount == 0) return 0;
@@ -112,12 +96,13 @@ contract ProductContract {
     // Delete product (admin only)
     function deleteProduct(uint256 _productId) public onlyAdmin {
         require(_productId < productCount, "Invalid productId");
+        require(products[_productId].exists, "Product already deleted");
 
-        delete products[_productId];
+        products[_productId].exists = false;
         emit ProductDeleted(_productId);
     }
 
-    // Get all products (excluding comments)
+    // Get all existing (non-deleted) products
     function getAllProducts()
         public
         view
@@ -131,23 +116,36 @@ contract ProductContract {
             uint256[] memory prices
         )
     {
-        ids = new uint256[](productCount);
-        names = new string[](productCount);
-        descriptions = new string[](productCount);
-        imageBase64s = new string[](productCount);
-        creators = new address[](productCount);
-        avgRatings = new uint256[](productCount);
-        prices = new uint256[](productCount);
+        uint256 validCount = 0;
 
+        // First pass: count valid products
         for (uint256 i = 0; i < productCount; i++) {
+            if (products[i].exists) validCount++;
+        }
+
+        // Initialize arrays
+        ids = new uint256[](validCount);
+        names = new string[](validCount);
+        descriptions = new string[](validCount);
+        imageBase64s = new string[](validCount);
+        creators = new address[](validCount);
+        avgRatings = new uint256[](validCount);
+        prices = new uint256[](validCount);
+
+        // Second pass: fill arrays
+        uint256 index = 0;
+        for (uint256 i = 0; i < productCount; i++) {
+            if (!products[i].exists) continue;
+
             Product storage p = products[i];
-            ids[i] = p.id;
-            names[i] = p.name;
-            descriptions[i] = p.description;
-            imageBase64s[i] = p.imageBase64;
-            creators[i] = p.creator;
-            avgRatings[i] = p.ratingCount == 0 ? 0 : (p.totalRating / p.ratingCount);
-            prices[i] = p.price;
+            ids[index] = p.id;
+            names[index] = p.name;
+            descriptions[index] = p.description;
+            imageBase64s[index] = p.imageBase64;
+            creators[index] = p.creator;
+            avgRatings[index] = p.ratingCount == 0 ? 0 : (p.totalRating / p.ratingCount);
+            prices[index] = p.price;
+            index++;
         }
     }
 }
