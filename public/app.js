@@ -1,10 +1,15 @@
 let web3;
 let productContract;
 let accounts;
+let currentUserRole = ""; // 'admin' or 'user'
 
-const productContractAddress = "0xd64dF1A56865CED80f1058b1556fF38F7dADe8f1";
-
-const productContractABI =  [
+const productContractAddress =  "0xF6B65E48FB67aA3cEf891B9d2e90015969f9FEd3"
+const productContractABI = [
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
     {
       "anonymous": false,
       "inputs": [
@@ -54,6 +59,33 @@ const productContractABI =  [
       ],
       "name": "ProductAdded",
       "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "productId",
+          "type": "uint256"
+        }
+      ],
+      "name": "ProductDeleted",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "adminAddress",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -118,6 +150,11 @@ const productContractABI =  [
           "internalType": "uint256",
           "name": "ratingCount",
           "type": "uint256"
+        },
+        {
+          "internalType": "bool",
+          "name": "exists",
+          "type": "bool"
         }
       ],
       "stateMutability": "view",
@@ -233,6 +270,19 @@ const productContractABI =  [
       "constant": true
     },
     {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "productId",
+          "type": "uint256"
+        }
+      ],
+      "name": "deleteProduct",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
       "inputs": [],
       "name": "getAllProducts",
       "outputs": [
@@ -278,9 +328,6 @@ const productContractABI =  [
     }
   ];
 
-// Minimal ABI - Replace this by compiling your contract and copying ABI here
-// For demonstration, use truffle build or remix and paste ABI here.
-
 window.addEventListener('load', async () => {
   if (window.ethereum) {
     web3 = new Web3(window.ethereum);
@@ -288,7 +335,7 @@ window.addEventListener('load', async () => {
       await window.ethereum.request({ method: 'eth_requestAccounts' });
       accounts = await web3.eth.getAccounts();
       productContract = new web3.eth.Contract(productContractABI, productContractAddress);
-      await loadProducts();
+      console.log("Contract initialized");
     } catch (error) {
       alert("Please allow access to MetaMask accounts.");
       console.error(error);
@@ -297,6 +344,65 @@ window.addEventListener('load', async () => {
     alert("Please install MetaMask.");
   }
 });
+
+function showLogin(role) {
+  currentUserRole = role;
+  document.getElementById("roleSelectionSection").style.display = "none";
+  document.getElementById("loginSection").style.display = "block";
+  document.getElementById("loginRoleName").innerText = role.charAt(0).toUpperCase() + role.slice(1);
+  document.getElementById("username").value = "";
+  document.getElementById("password").value = "";
+}
+
+function cancelLogin() {
+  currentUserRole = "";
+  document.getElementById("loginSection").style.display = "none";
+  document.getElementById("roleSelectionSection").style.display = "block";
+}
+
+function login() {
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value.trim();
+
+  if (currentUserRole === "admin") {
+    if (username === "admin" && password === "admin123") {
+      showDashboard();
+    } else {
+      alert("Invalid admin credentials");
+    }
+  } else if (currentUserRole === "user") {
+    if (username && password) {
+      showDashboard();
+    } else {
+      alert("Invalid user credentials");
+    }
+  }
+}
+
+function showDashboard() {
+  document.getElementById("loginSection").style.display = "none";
+  document.getElementById("roleSelectionSection").style.display = "none";
+
+  if (currentUserRole === "admin") {
+    document.getElementById("adminSection").style.display = "block";
+  } else {
+    document.getElementById("adminSection").style.display = "none";
+  }
+
+  document.getElementById("productListSection").style.display = "block";
+  document.getElementById("logoutSection").style.display = "block";
+
+  loadProducts();
+}
+
+function logout() {
+  currentUserRole = "";
+  document.getElementById("adminSection").style.display = "none";
+  document.getElementById("productListSection").style.display = "none";
+  document.getElementById("logoutSection").style.display = "none";
+  document.getElementById("loginSection").style.display = "none";
+  document.getElementById("roleSelectionSection").style.display = "block";
+}
 
 async function addProduct() {
   const name = document.getElementById("productName").value;
@@ -335,7 +441,7 @@ async function loadProducts() {
     const imageBase64s = result[3];
     const creators = result[4];
     const avgRatings = result[5];
-    const prices = result[6]; // Newly added prices array from contract
+    const prices = result[6];
 
     const container = document.getElementById("products");
     container.innerHTML = "";
@@ -343,18 +449,30 @@ async function loadProducts() {
     ids.forEach((id, index) => {
       const div = document.createElement("div");
       div.className = "product";
-      div.innerHTML = `
+      let content = `
         <h3>${names[index]}</h3>
         <img src="data:image/png;base64,${imageBase64s[index]}" alt="Product Image" />
         <p>${descriptions[index]}</p>
         <p><strong>Price:</strong> ${prices[index]} ETH</p>
         <p class="rating">Average Rating: ${avgRatings[index]}</p>
-        <textarea id="comment-${id}" placeholder="Add a comment..."></textarea>
-        <input type="number" id="rating-${id}" min="1" max="5" placeholder="Rating (1-5)" />
-        <button onclick="addComment(${id})">Submit Review</button>
         <button onclick="loadComments(${id})">Show Reviews</button>
         <div id="comments-${id}"></div>
       `;
+
+      if (currentUserRole === "user") {
+        content += `
+          <textarea id="comment-${id}" placeholder="Add a comment..."></textarea>
+          <input type="number" id="rating-${id}" min="1" max="5" placeholder="Rating (1-5)" />
+          <button onclick="addComment(${id})">Submit Review</button>
+        `;
+      }
+      if (currentUserRole === "admin") {
+        content += `
+          <button onclick="deleteProduct(${id})" style="color: red; margin-top: 10px;">Delete Product</button>
+        `;
+      }
+
+      div.innerHTML = content;
       container.appendChild(div);
     });
   } catch (error) {
@@ -392,3 +510,24 @@ async function loadComments(id) {
     console.error("Failed to load comments:", error);
   }
 }
+
+async function deleteProduct(id) {
+  if (!confirm("Are you sure you want to delete this product?")) return;
+
+  try {
+    // Get current user's connected account from web3
+    const accounts = await web3.eth.getAccounts();
+    const userAccount = accounts[0];
+
+    // Call the deleteProduct method with the current user's account
+    await productContract.methods.deleteProduct(id).send({ from: userAccount });
+
+    alert("Product deleted successfully.");
+    await loadProducts();
+  } catch (error) {
+    alert("Failed to delete product. See console for details.");
+    console.error(error);
+  }
+}
+
+

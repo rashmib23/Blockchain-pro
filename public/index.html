@@ -1,23 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Product Rating Review DApp</title>
   <script src="https://cdn.jsdelivr.net/npm/web3@1.10.0/dist/web3.min.js"></script>
-   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <h1>Product Rating Review System</h1>
 
-  <h2>Add Product</h2>
-  <input id="productName" placeholder="Name" />
-  <textarea id="productDesc" placeholder="Description"></textarea>
-  <input id="productPrice" type="number" placeholder="Price in USD" />
-  <input type="file" id="productImage" />
-  <button onclick="addProduct()">Add Product</button>
+  <!-- Role Selection Section -->
+  <div id="roleSelectionSection">
+    <h2>Select Role</h2>
+    <button onclick="showLogin('admin')">Admin</button>
+    <button onclick="showLogin('user')">User</button>
+  </div>
 
-  <h2>All Products</h2>
-  <div id="products"></div>
+  <!-- Login Section -->
+  <div id="loginSection" style="display:none;">
+    <h2>Login as <span id="loginRoleName"></span></h2>
+    <input id="username" placeholder="Username" />
+    <input id="password" type="password" placeholder="Password" />
+    <button onclick="login()">Login</button>
+    <button onclick="cancelLogin()">Cancel</button>
+  </div>
+
+  <!-- Admin Section -->
+  <div id="adminSection" style="display:none;">
+    <h2>Admin Panel - Add Product</h2>
+    <input id="productName" placeholder="Name" />
+    <textarea id="productDesc" placeholder="Description"></textarea>
+    <input id="productPrice" type="number" placeholder="Price in ETH" />
+    <input type="file" id="productImage" />
+    <button onclick="addProduct()">Add Product</button>
+  </div>
+
+  <!-- Common Section for Both Roles -->
+  <div id="productListSection" style="display:none;">
+    <h2>All Products</h2>
+    <div id="products"></div>
+  </div>
+
+  <!-- Logout Button -->
+  <div id="logoutSection" style="display:none; margin-top:20px;">
+    <button onclick="logout()">Logout</button>
+  </div>
 
   <script src="app.js"></script>
 </body>
