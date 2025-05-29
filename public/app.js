@@ -3,7 +3,7 @@ let productContract;
 let accounts;
 let currentUserRole = ""; // 'admin' or 'user'
 
-const productContractAddress =  "0x2C10AD534e90f09cc419d9B82536f764CF5Fb679"
+const productContractAddress =  "0x811887Be1c26b98Bb16d3348F6b4658ad019aefD"
 const productContractABI = [
     {
       "inputs": [],
