@@ -1,87 +1,121 @@
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  margin: 30px auto;       /* center horizontally */
-  background-color: #f9f9f9;
-  color: #333;
-  line-height: 1.6;
-  max-width: 65vw;         /* 65% of viewport width */
-  padding: 0 20px;         /* horizontal padding */
-  min-width: 320px;        /* minimum width for small screens */
-  box-sizing: border-box;  /* include padding in width */
+/* Reset some defaults */
+* {
+  box-sizing: border-box;
 }
 
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 30px auto;
+  background: linear-gradient(135deg, #f0f4ff, #ffffff);
+  color: #222;
+  line-height: 1.6;
+  max-width: 65vw;
+  padding: 0 20px;
+  min-width: 320px;
+  transition: background-color 0.3s ease;
+}
 
 section {
   margin-bottom: 40px;
-  padding: 25px 30px;
-  border: 1px solid #e1e4e8;
-  border-radius: 10px;
-  background: #fff;
-  box-shadow: 0 4px 6px rgb(32 33 36 / 8%);
-  transition: box-shadow 0.3s ease;
+  padding: 30px 35px;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
 }
 
 section:hover {
-  box-shadow: 0 8px 16px rgb(32 33 36 / 16%);
+  box-shadow: 0 14px 40px rgba(0,0,0,0.15);
+  transform: translateY(-4px);
 }
 
 input, textarea {
   display: block;
-  margin: 10px 0 15px;
-  padding: 10px 12px;
+  margin: 12px 0 20px;
+  padding: 14px 16px;
   width: 100%;
   max-width: 400px;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  transition: border-color 0.3s ease;
+  font-size: 1.1rem;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  font-weight: 400;
+  font-family: inherit;
 }
 
 input:focus, textarea:focus {
-  border-color: #3b82f6;
+  border-color: #4f9aff;
   outline: none;
-  box-shadow: 0 0 5px rgba(59, 130, 246, 0.5);
+  box-shadow: 0 0 10px rgba(79, 154, 255, 0.5);
+  background: #f7fbff;
 }
 
 button {
-  background-color: #3b82f6;
-  color: white;
-  padding: 12px 20px;
+  background: linear-gradient(135deg, #4f9aff, #3b82f6);
+  color: #fff;
+  padding: 14px 26px;
   border: none;
-  border-radius: 6px;
-  font-weight: 600;
-  font-size: 1rem;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 1.1rem;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+  transition: background 0.4s ease, box-shadow 0.3s ease;
+  box-shadow: 0 6px 15px rgba(59, 130, 246, 0.4);
 }
 
 button:hover {
-  background-color: #2563eb;
-  box-shadow: 0 6px 12px rgba(37, 99, 235, 0.5);
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.6);
 }
 
 button:active {
-  background-color: #1e40af;
+  background: #1e40af;
+  box-shadow: 0 4px 10px rgba(30, 64, 175, 0.7);
+  transform: scale(0.98);
+}
+
+#products {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding-bottom: 10px; /* space for scrollbar */
+  scroll-behavior: smooth; /* smooth scrolling when using JS or user scroll */
+  -webkit-overflow-scrolling: touch; /* better momentum scroll on iOS */
+}
+
+.product {
+  flex: 0 0 280px; /* fixed width for each product card */
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(32, 33, 36, 0.1);
+  padding: 20px;
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+#products::-webkit-scrollbar {
+  height: 8px;
+}
+
+#products::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+#products::-webkit-scrollbar-thumb {
+  background: #3b82f6;
+  border-radius: 10px;
+}
+
+#products::-webkit-scrollbar-thumb:hover {
+  background: #2563eb;
 }
 
 @media (max-width: 768px) {
-  body {
-    max-width: 90vw; /* wider on smaller screens */
-    margin: 15px auto;
-    padding: 0 10px;
-  }
-
-
-  section {
-    padding: 15px 20px;
-  }
-
-  input, textarea {
-    max-width: 100%;
-  }
-
   #products {
-    grid-template-columns: 1fr;
+    flex-wrap: nowrap;
   }
 }
