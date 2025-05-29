@@ -3,7 +3,7 @@ let productContract;
 let accounts;
 let currentUserRole = ""; // 'admin' or 'user'
 
-const productContractAddress =  "0xF6B65E48FB67aA3cEf891B9d2e90015969f9FEd3"
+const productContractAddress =  "0x1b914B60B8791D60044B50e22DA3C71860Ff4470"
 const productContractABI = [
     {
       "inputs": [],
@@ -421,6 +421,30 @@ async function addProduct() {
     try {
       await productContract.methods.addProduct(name, desc, base64Image, price)
         .send({ from: accounts[0] });
+
+      // ✅ Save to backend
+      const productData = {
+        name,
+        desc,
+        price,
+        image: base64Image,
+        creator: accounts[0],
+        timestamp: new Date().toISOString()
+      };
+
+      fetch("http://localhost:5000/save-product", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(productData)
+      })
+      .then(res => res.json())
+      .then(data => {
+        console.log("Saved to backend:", data);
+      })
+      .catch(err => console.error("Backend save failed:", err));
+
       alert("Product added!");
       await loadProducts();
     } catch (error) {
@@ -430,6 +454,7 @@ async function addProduct() {
   };
   reader.readAsDataURL(imageFile);
 }
+
 
 async function loadProducts() {
   try {
