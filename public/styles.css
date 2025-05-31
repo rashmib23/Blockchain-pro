@@ -2,8 +2,8 @@
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
-  padding: 20px;
-  background: #f9f9f9;
+  padding: 60px;
+  background: #bcdadc;
   color: #333;
   min-height: 100vh;
 }
@@ -16,7 +16,7 @@ h1, h2 {
 
 /* Buttons */
 button {
-  background-color: #007bff;
+  background-color: #2aa7b9; /* lighter blue-green */
   border: none;
   color: white;
   padding: 8px 16px;
@@ -28,7 +28,7 @@ button {
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: #208b9b;
 }
 
 /* Input Fields & Textareas */
@@ -53,7 +53,45 @@ textarea {
   min-height: 80px;
 }
 
-/* Role Selection Buttons */
+#roleWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* was center */
+  min-height: auto;        /* was 60vh */
+  padding: 20px;
+  margin-top: 20px;
+}
+
+
+/* Main Page Header */
+#mainHeader {
+  background: linear-gradient(to right, #56d8e4, #60c9d4);
+  color: white;
+  padding: 25px 0;
+  text-align: center;
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  margin-bottom: 30px;
+  position: relative;
+  z-index: 1;
+}
+
+#mainHeader h1 {
+  margin: 0;
+  font-size: 2.4rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+/* Role Selection */
+#roleSelectionSection {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+}
+
 #roleSelectionSection button {
   width: 140px;
   font-size: 1.1rem;
@@ -61,7 +99,7 @@ textarea {
 
 /* Navbar */
 #navbar {
-  background-color: #343a40;
+  background-color: #5c6f7d;
   color: white;
   padding: 10px 20px;
   display: flex;
@@ -79,12 +117,12 @@ textarea {
 }
 
 #navbar button {
-  background-color: #495057;
+  background-color: #7d8f9c;
   padding: 6px 14px;
 }
 
 #navbar button:hover {
-  background-color: #212529;
+  background-color: #5c6f7d;
 }
 
 /* Hide navbar and logout button on Role Selection Page */
@@ -100,7 +138,7 @@ textarea {
   background: white;
   padding: 25px 30px;
   border-radius: 10px;
-  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
 }
 
 #loginSection label {
@@ -119,7 +157,7 @@ textarea {
   background: white;
   padding: 25px 30px;
   border-radius: 10px;
-  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
 }
 
 #adminSection label {
@@ -143,7 +181,7 @@ textarea {
 .product {
   background: white;
   border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
   padding: 15px 20px;
   display: flex;
   flex-direction: column;
@@ -152,7 +190,7 @@ textarea {
 }
 
 .product:hover {
-  box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
 }
 
 .product h3 {
@@ -169,7 +207,7 @@ textarea {
   object-fit: contain;
   border-radius: 8px;
   margin-bottom: 12px;
-  background-color: #f7f7f7;
+  background-color: #f2f2f2;
 }
 
 .product p {
@@ -220,7 +258,7 @@ textarea {
   border-radius: 3px;
 }
 
-/* Logout Section Button Styling */
+/* Logout Section */
 #logoutSection {
   max-width: 400px;
   margin: 20px auto 0 auto;
@@ -230,11 +268,27 @@ textarea {
 #logoutSection button {
   width: 100%;
   font-size: 1rem;
-  background-color: #dc3545;
+  background-color: #e76c6c;
 }
 
 #logoutSection button:hover {
-  background-color: #b02a37;
+  background-color: #c85656;
+}
+
+/* Footer */
+#appFooter {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #56d8e4;
+  color: white;
+  font-weight: 600;
+  text-align: center;
+  padding: 10px 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
 }
 
 /* Responsive tweaks */
@@ -242,7 +296,7 @@ textarea {
   #products {
     grid-template-columns: 1fr;
   }
-  
+
   #loginSection, #adminSection {
     padding: 15px 20px;
   }

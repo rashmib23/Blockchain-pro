@@ -7,22 +7,34 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <h1>Product Rating Review System</h1>
+  <header id="mainHeader">
+    <h1>Product Rating Review System</h1>
+  </header>
 
   <!-- Navigation Bar -->
-  <div id="navbar" style="display:none; background-color: #333; color: white; padding: 10px;">
-    <span style="margin-right: 20px;"><strong>Welcome, <span id="navUsername"></span></strong></span>
-    <button onclick="handleViewProducts()" style="margin-right: 10px;">View Products</button>
-    <button onclick="showAddProduct()" id="addProductBtn" style="margin-right: 10px; display: none;">Add Product</button>
+<div id="navbar" style="display: none;">
+  <div style="flex: 1; display: flex; align-items: center;">
+    <strong style="font-size: 1.1rem;">Welcome, <span id="navUsername"></span></strong>
+  </div>
+  
+  <div style="display: flex; gap: 10px;">
+    <button onclick="goHome()">Home</button>
+    <button onclick="handleViewProducts()">View Products</button>
+    <button onclick="showAddProduct()" id="addProductBtn" style="display: none;">Add Product</button>
     <button onclick="logout()">Logout</button>
   </div>
+</div>
+
 
   <!-- Role Selection Section -->
-  <div id="roleSelectionSection">
-    <h2>Select Role</h2>
-    <button type="button" onclick="showLogin('admin')">Admin</button>
-    <button type="button" onclick="showLogin('user')">User</button>
-  </div>
+   <div id="roleWrapper">
+    <div id="roleSelectionSection">
+      <h2>Select Role</h2>
+      <button type="button" onclick="showLogin('admin')">Admin</button>
+      <button type="button" onclick="showLogin('user')">User</button>
+    </div>
+   </div>
+    
 
   <!-- Login Section -->
   <div id="loginSection" style="display:none;">
@@ -55,6 +67,10 @@
     </div>
   </div>
 
+  <section id="homeSection" style="display: none; padding: 20px;">
+    <h2 id="welcomeMessage"></h2>
+  </section>
+
   <!-- Admin Section -->
   <div id="adminSection" style="display:none; margin-top: 20px;">
     <h2>Admin Panel - Add Product</h2>
@@ -83,6 +99,9 @@
   <!-- Logout Button -->
   <div id="logoutSection" style="display:none; margin-top:20px;">
     <button type="button" onclick="logout()">Logout</button>
+  </div>
+  <div id="appFooter">
+    Blockchain Product Review System &mdash; Powered by Ethereum Smart Contracts
   </div>
 
   <script src="app.js"></script>

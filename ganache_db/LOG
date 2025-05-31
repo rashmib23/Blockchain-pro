@@ -1,1 +1,8 @@
-2025/05/31-13:49:00.453 bc740 Delete type=3 #1
+2025/05/31-21:40:14.392 b64f4 Recovering log #3
+2025/05/31-21:40:14.392 b64f4 Level-0 table #5: started
+2025/05/31-21:40:14.461 b64f4 Level-0 table #5: 14764 bytes OK
+2025/05/31-21:40:14.472 b64f4 Delete type=0 #3
+2025/05/31-21:40:14.473 b64f4 Delete type=3 #2
+2025/05/31-22:20:58.993 b92c4 Level-0 table #8: started
+2025/05/31-22:20:59.060 b92c4 Level-0 table #8: 2272464 bytes OK
+2025/05/31-22:20:59.067 b92c4 Delete type=0 #6

@@ -3,6 +3,7 @@ let productContract;
 let accounts;
 let currentUserRole = ""; // 'admin' or 'user'
 let activeSection = ""; // can be "addProduct" or "viewProducts"
+let currentUsername = "";
 
 const productContractAddress =  "0x51d563264122047D374B7C93700CEa8505a54F85"
 const productContractABI = [
@@ -511,6 +512,7 @@ async function login() {
 
       // Check if returned userId matches username entered
       if (userId === username) {
+        currentUsername = username; 
         showDashboard();
       } else {
         alert("Invalid username or user not registered.");
@@ -524,31 +526,74 @@ async function login() {
 }
 
 function showDashboard() {
+  // Hide login and role selection
   document.getElementById("loginSection").style.display = "none";
   document.getElementById("roleSelectionSection").style.display = "none";
-  document.getElementById("navbar").style.display = "block";
-  document.getElementById("navUsername").innerText = currentUserRole.toUpperCase();
 
+  // Show navbar
+  document.getElementById("navbar").style.display = "block";
+
+  // Show or hide Add Product button based on role
   document.getElementById("addProductBtn").style.display = currentUserRole === "admin" ? "inline-block" : "none";
 
-  // Hide both sections initially
+  // Hide all content sections initially
   document.getElementById("adminSection").style.display = "none";
   document.getElementById("productListSection").style.display = "none";
+  document.getElementById("homeSection").style.display = "none";
+
+  // Show home on dashboard load
+  goHome();
+
+  // Update username display on navbar if any
+  const navUsernameElem = document.getElementById("navUsername");
+  if (navUsernameElem) {
+    navUsernameElem.innerText = currentUsername;
+  }
 }
 
+function goHome() {
+  // Hide all sections
+  document.querySelectorAll("section").forEach(sec => sec.style.display = "none");
+
+  // Show home section with welcome message
+  const welcomeMsg = `Welcome ${currentUsername} to the Product Rating Review System`;
+  const welcomeElem = document.getElementById("welcomeMessage");
+  if (welcomeElem) {
+    welcomeElem.innerText = welcomeMsg;
+  }
+
+  document.getElementById("homeSection").style.display = "block";
+  document.getElementById("navbar").style.display = "block";
+  document.getElementById("productListSection").style.display = "none";
+  document.getElementById("adminSection").style.display = "none";
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+
 function showAddProduct() {
-  document.getElementById("adminSection").style.display = "block";       // Show Add Product
-  document.getElementById("productListSection").style.display = "none"; // Hide View Products
+  // Hide all main content sections first
+  document.getElementById("homeSection").style.display = "none";
+  document.getElementById("productListSection").style.display = "none";
+
+  // Show admin section (add product)
+  document.getElementById("adminSection").style.display = "block";
 }
 
 function handleViewProducts() {
-  document.getElementById("productListSection").style.display = "block"; // Show View Products
-  document.getElementById("adminSection").style.display = "none";       // Hide Add Product
+  // Hide other content sections
+  document.getElementById("homeSection").style.display = "none";
+  document.getElementById("adminSection").style.display = "none";
+
+  // Show product list section
+  document.getElementById("productListSection").style.display = "block";
+  // Load product list if needed
   loadProducts();
 }
 
 function logout() {
   currentUserRole = "";
+  document.getElementById("homeSection").style.display = "none";
   document.getElementById("adminSection").style.display = "none";
   document.getElementById("productListSection").style.display = "none";
   document.getElementById("logoutSection").style.display = "none";
