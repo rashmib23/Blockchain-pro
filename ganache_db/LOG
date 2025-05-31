@@ -1,0 +1,41 @@
+2025/05/31-10:26:52.810 bad40 Recovering log #39
+2025/05/31-10:26:52.833 bad40 Level-0 table #47: started
+2025/05/31-10:26:52.913 bad40 Level-0 table #47: 1659325 bytes OK
+2025/05/31-10:26:52.923 bad40 Delete type=0 #39
+2025/05/31-10:26:52.923 bad40 Delete type=3 #34
+2025/05/31-10:27:58.087 b1aa8 Compacting 1@0 + 5@1 files
+2025/05/31-10:27:58.206 b1aa8 Generated table #49@0: 5700 keys, 2121794 bytes
+2025/05/31-10:27:58.317 b1aa8 Generated table #50@0: 5724 keys, 2125747 bytes
+2025/05/31-10:27:58.455 b1aa8 Generated table #51@0: 5682 keys, 2125733 bytes
+2025/05/31-10:27:58.586 b1aa8 Generated table #52@0: 5713 keys, 2123864 bytes
+2025/05/31-10:27:58.747 b1aa8 Generated table #53@0: 7500 keys, 1985103 bytes
+2025/05/31-10:27:58.747 b1aa8 Compacted 1@0 + 5@1 files => 10482241 bytes
+2025/05/31-10:27:58.750 b1aa8 compacted to: files[ 0 5 0 0 0 0 0 ]
+2025/05/31-10:27:58.751 b1aa8 Delete type=2 #41
+2025/05/31-10:27:58.753 b1aa8 Delete type=2 #42
+2025/05/31-10:27:58.754 b1aa8 Delete type=2 #43
+2025/05/31-10:27:58.755 b1aa8 Delete type=2 #44
+2025/05/31-10:27:58.757 b1aa8 Delete type=2 #45
+2025/05/31-10:27:58.758 b1aa8 Delete type=2 #47
+2025/05/31-11:11:18.573 b1aa8 Level-0 table #55: started
+2025/05/31-11:11:18.657 b1aa8 Level-0 table #55: 1894083 bytes OK
+2025/05/31-11:11:18.661 b1aa8 Delete type=0 #48
+2025/05/31-11:42:46.664 b1aa8 Compacting 1@0 + 5@1 files
+2025/05/31-11:42:46.740 b1aa8 Generated table #56@0: 5673 keys, 2127594 bytes
+2025/05/31-11:42:46.845 b1aa8 Generated table #57@0: 5720 keys, 2122841 bytes
+2025/05/31-11:42:46.906 b1aa8 Generated table #58@0: 5624 keys, 2121576 bytes
+2025/05/31-11:42:46.987 b1aa8 Generated table #59@0: 5676 keys, 2122126 bytes
+2025/05/31-11:42:47.072 b1aa8 Generated table #60@0: 5684 keys, 2124350 bytes
+2025/05/31-11:42:47.128 b1aa8 Generated table #61@0: 4567 keys, 949920 bytes
+2025/05/31-11:42:47.128 b1aa8 Compacted 1@0 + 5@1 files => 11568407 bytes
+2025/05/31-11:42:47.129 b1aa8 compacted to: files[ 0 6 0 0 0 0 0 ]
+2025/05/31-11:42:47.129 b1aa8 Delete type=2 #49
+2025/05/31-11:42:47.130 b1aa8 Delete type=2 #50
+2025/05/31-11:42:47.130 b1aa8 Delete type=2 #51
+2025/05/31-11:42:47.130 b1aa8 Delete type=2 #52
+2025/05/31-11:42:47.130 b1aa8 Delete type=2 #53
+2025/05/31-11:42:47.132 b1aa8 Delete type=2 #55
+2025/05/31-11:42:47.134 b1aa8 Moved #56 to level-2 2127594 bytes OK: files[ 0 5 1 0 0 0 0 ]
+2025/05/31-13:11:25.243 b1aa8 Level-0 table #63: started
+2025/05/31-13:11:25.297 b1aa8 Level-0 table #63: 2028612 bytes OK
+2025/05/31-13:11:25.301 b1aa8 Delete type=0 #54
