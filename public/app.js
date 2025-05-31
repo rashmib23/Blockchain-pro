@@ -2,6 +2,7 @@ let web3;
 let productContract;
 let accounts;
 let currentUserRole = ""; // 'admin' or 'user'
+let activeSection = ""; // can be "addProduct" or "viewProducts"
 
 const productContractAddress =  "0x51d563264122047D374B7C93700CEa8505a54F85"
 const productContractABI = [
@@ -525,16 +526,24 @@ async function login() {
 function showDashboard() {
   document.getElementById("loginSection").style.display = "none";
   document.getElementById("roleSelectionSection").style.display = "none";
+  document.getElementById("navbar").style.display = "block";
+  document.getElementById("navUsername").innerText = currentUserRole.toUpperCase();
 
-  if (currentUserRole === "admin") {
-    document.getElementById("adminSection").style.display = "block";
-  } else {
-    document.getElementById("adminSection").style.display = "none";
-  }
+  document.getElementById("addProductBtn").style.display = currentUserRole === "admin" ? "inline-block" : "none";
 
-  document.getElementById("productListSection").style.display = "block";
-  document.getElementById("logoutSection").style.display = "block";
+  // Hide both sections initially
+  document.getElementById("adminSection").style.display = "none";
+  document.getElementById("productListSection").style.display = "none";
+}
 
+function showAddProduct() {
+  document.getElementById("adminSection").style.display = "block";       // Show Add Product
+  document.getElementById("productListSection").style.display = "none"; // Hide View Products
+}
+
+function handleViewProducts() {
+  document.getElementById("productListSection").style.display = "block"; // Show View Products
+  document.getElementById("adminSection").style.display = "none";       // Hide Add Product
   loadProducts();
 }
 
@@ -543,9 +552,11 @@ function logout() {
   document.getElementById("adminSection").style.display = "none";
   document.getElementById("productListSection").style.display = "none";
   document.getElementById("logoutSection").style.display = "none";
+  document.getElementById("navbar").style.display = "none";
   document.getElementById("loginSection").style.display = "none";
   document.getElementById("roleSelectionSection").style.display = "block";
 }
+
 
 async function addProduct() {
   const name = document.getElementById("productName").value;

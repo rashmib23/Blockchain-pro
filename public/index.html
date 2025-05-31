@@ -9,6 +9,14 @@
 <body>
   <h1>Product Rating Review System</h1>
 
+  <!-- Navigation Bar -->
+  <div id="navbar" style="display:none; background-color: #333; color: white; padding: 10px;">
+    <span style="margin-right: 20px;"><strong>Welcome, <span id="navUsername"></span></strong></span>
+    <button onclick="handleViewProducts()" style="margin-right: 10px;">View Products</button>
+    <button onclick="showAddProduct()" id="addProductBtn" style="margin-right: 10px; display: none;">Add Product</button>
+    <button onclick="logout()">Logout</button>
+  </div>
+
   <!-- Role Selection Section -->
   <div id="roleSelectionSection">
     <h2>Select Role</h2>
