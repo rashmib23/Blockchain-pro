@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 contract ProductContract {
     struct Comment {
-        address commenter;
+        string commenterId;
         string text;
         uint8 rating;
     }
@@ -18,7 +18,12 @@ contract ProductContract {
         uint256 totalRating;
         uint256 ratingCount;
         Comment[] comments;
-        bool exists;  // NEW FIELD to track deleted products
+        bool exists;  // track deleted products
+    }
+
+    struct User {
+        string userId;
+        bool isRegistered;
     }
 
     uint256 public productCount = 0;
@@ -26,8 +31,11 @@ contract ProductContract {
 
     address public adminAddress;
 
+    mapping(address => User) public users;
+
+    event UserRegistered(address userAddress, string userId);
     event ProductAdded(uint256 id, string name);
-    event CommentAdded(uint256 productId, address commenter, string text, uint8 rating);
+    event CommentAdded(uint256 productId, address commenter, string commenterId, string text, uint8 rating);
     event ProductDeleted(uint256 productId);
 
     modifier onlyAdmin() {
@@ -37,6 +45,17 @@ contract ProductContract {
 
     constructor() {
         adminAddress = msg.sender;  // The deployer is admin
+    }
+
+    function registerUser(string memory _userId) public {
+        require(!users[msg.sender].isRegistered, "User already registered");
+        users[msg.sender] = User(_userId, true);
+        emit UserRegistered(msg.sender, _userId);
+    }
+
+    function loginUser() public view returns (string memory) {
+        require(users[msg.sender].isRegistered, "User not registered");
+        return users[msg.sender].userId;
     }
 
     // Add a new product
@@ -68,13 +87,14 @@ contract ProductContract {
         require(_rating >= 1 && _rating <= 5, "Rating must be 1-5");
         require(_productId < productCount, "Invalid productId");
         require(products[_productId].exists, "Product does not exist");
+        require(users[msg.sender].isRegistered, "User not registered");
 
         Product storage product = products[_productId];
-        product.comments.push(Comment(msg.sender, _text, _rating));
+        product.comments.push(Comment(users[msg.sender].userId, _text, _rating));
         product.totalRating += _rating;
         product.ratingCount++;
 
-        emit CommentAdded(_productId, msg.sender, _text, _rating);
+        emit CommentAdded(_productId, msg.sender, users[msg.sender].userId, _text, _rating);
     }
 
     // Get all comments for a product
@@ -94,11 +114,11 @@ contract ProductContract {
     }
 
     // Delete product (admin only)
-    function deleteProduct(uint256 productId) public {
-    require(products[productId].exists, "Product does not exist");
-    delete products[productId];
+    function deleteProduct(uint256 productId) public onlyAdmin {
+        require(products[productId].exists, "Product does not exist");
+        products[productId].exists = false;  // mark as deleted
+        emit ProductDeleted(productId);
     }
-
 
     // Get all existing (non-deleted) products
     function getAllProducts()
@@ -145,5 +165,7 @@ contract ProductContract {
             prices[index] = p.price;
             index++;
         }
+
+        return (ids, names, descriptions, imageBase64s, creators, avgRatings, prices);
     }
 }
