@@ -413,6 +413,7 @@ window.addEventListener('load', async () => {
       accounts = await web3.eth.getAccounts();
       productContract = new web3.eth.Contract(productContractABI, productContractAddress);
       console.log("Contract initialized");
+        // <-- NEW: initialize menu after contract setup
     } catch (error) {
       alert("Please allow access to MetaMask accounts.");
       console.error(error);
@@ -526,6 +527,8 @@ function showDashboard() {
   document.getElementById("loginSection").style.display = "none";
   document.getElementById("roleSelectionSection").style.display = "none";
 
+  updateMenuBar();
+
   if (currentUserRole === "admin") {
     document.getElementById("adminSection").style.display = "block";
   } else {
@@ -538,11 +541,50 @@ function showDashboard() {
   loadProducts();
 }
 
+function updateMenuBar() {
+  const menu = document.getElementById("menuBar");
+  const menuOptions = document.getElementById("menuOptions");
+  menuOptions.innerHTML = ""; // Clear old items
+
+  const homeItem = document.createElement("li");
+  homeItem.innerText = "Home";
+  homeItem.onclick = () => {
+    loadProducts();
+    document.getElementById("productListSection").scrollIntoView();
+  };
+  menuOptions.appendChild(homeItem);
+
+  if (currentUserRole === "admin") {
+    const addItem = document.createElement("li");
+    addItem.innerText = "Add Product";
+    addItem.onclick = () => {
+      document.getElementById("adminSection").scrollIntoView();
+    };
+    menuOptions.appendChild(addItem);
+  }
+
+  const allProductsItem = document.createElement("li");
+  allProductsItem.innerText = "All Products";
+  allProductsItem.onclick = () => {
+    loadProducts();
+    document.getElementById("productListSection").scrollIntoView();
+  };
+  menuOptions.appendChild(allProductsItem);
+
+  const logoutItem = document.createElement("li");
+  logoutItem.innerText = "Logout";
+  logoutItem.onclick = logout;
+  menuOptions.appendChild(logoutItem);
+
+  menu.style.display = "block";
+}
+
 function logout() {
   currentUserRole = "";
   document.getElementById("adminSection").style.display = "none";
   document.getElementById("productListSection").style.display = "none";
   document.getElementById("logoutSection").style.display = "none";
+   document.getElementById("menuBar").style.display = "none";
   document.getElementById("loginSection").style.display = "none";
   document.getElementById("roleSelectionSection").style.display = "block";
 }
