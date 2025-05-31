@@ -3,3 +3,4 @@ ganache \
   --chain.chainId 1337 \
   --server.port 8545 \
   --database.dbPath ./ganache_db
+  

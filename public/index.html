@@ -12,38 +12,69 @@
   <!-- Role Selection Section -->
   <div id="roleSelectionSection">
     <h2>Select Role</h2>
-    <button onclick="showLogin('admin')">Admin</button>
-    <button onclick="showLogin('user')">User</button>
+    <button type="button" onclick="showLogin('admin')">Admin</button>
+    <button type="button" onclick="showLogin('user')">User</button>
   </div>
 
   <!-- Login Section -->
   <div id="loginSection" style="display:none;">
     <h2>Login as <span id="loginRoleName"></span></h2>
-    <input id="username" placeholder="Username" />
-    <input id="password" type="password" placeholder="Password" />
-    <button onclick="login()">Login</button>
-    <button onclick="cancelLogin()">Cancel</button>
+
+    <div id="loginForm">
+      <label for="username">Username:</label><br />
+      <input id="username" placeholder="Username" autocomplete="off" /><br />
+
+      <label for="password">Password:</label><br />
+      <input id="password" type="password" placeholder="Password" autocomplete="off" /><br />
+
+      <button type="button" onclick="login()">Login</button>
+      <button type="button" onclick="cancelLogin()">Cancel</button>
+
+      <button id="showRegisterBtn" type="button" onclick="showRegister()" style="display:none; margin-left:10px;">
+        Register
+      </button>
+    </div>
+
+    <div id="registerForm" style="display:none; margin-top: 10px;">
+      <label for="regUsername">New Username:</label><br />
+      <input id="regUsername" placeholder="New Username" autocomplete="off" /><br />
+
+      <label for="regPassword">New Password:</label><br />
+      <input id="regPassword" type="password" placeholder="New Password" autocomplete="off" /><br />
+
+      <button type="button" onclick="registerUser()">Register</button>
+      <button type="button" onclick="showLogin(currentUserRole)">Back to Login</button>
+    </div>
   </div>
 
   <!-- Admin Section -->
-  <div id="adminSection" style="display:none;">
+  <div id="adminSection" style="display:none; margin-top: 20px;">
     <h2>Admin Panel - Add Product</h2>
-    <input id="productName" placeholder="Name" />
-    <textarea id="productDesc" placeholder="Description"></textarea>
-    <input id="productPrice" type="number" placeholder="Price in ETH" />
-    <input type="file" id="productImage" />
-    <button onclick="addProduct()">Add Product</button>
+
+    <label for="productName">Product Name:</label><br />
+    <input id="productName" placeholder="Name" /><br />
+
+    <label for="productDesc">Description:</label><br />
+    <textarea id="productDesc" placeholder="Description"></textarea><br />
+
+    <label for="productPrice">Price in ETH:</label><br />
+    <input id="productPrice" type="number" placeholder="Price in ETH" step="0.0001" /><br />
+
+    <label for="productImage">Product Image:</label><br />
+    <input type="file" id="productImage" accept="image/*" /><br />
+
+    <button type="button" onclick="addProduct()">Add Product</button>
   </div>
 
   <!-- Common Section for Both Roles -->
-  <div id="productListSection" style="display:none;">
+  <div id="productListSection" style="display:none; margin-top: 20px;">
     <h2>All Products</h2>
     <div id="products"></div>
   </div>
 
   <!-- Logout Button -->
   <div id="logoutSection" style="display:none; margin-top:20px;">
-    <button onclick="logout()">Logout</button>
+    <button type="button" onclick="logout()">Logout</button>
   </div>
 
   <script src="app.js"></script>

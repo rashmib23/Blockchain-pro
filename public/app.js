@@ -28,6 +28,12 @@ const productContractABI = [
         {
           "indexed": false,
           "internalType": "string",
+          "name": "commenterId",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
           "name": "text",
           "type": "string"
         },
@@ -71,6 +77,25 @@ const productContractABI = [
         }
       ],
       "name": "ProductDeleted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "userAddress",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "userId",
+          "type": "string"
+        }
+      ],
+      "name": "UserRegistered",
       "type": "event"
     },
     {
@@ -164,6 +189,58 @@ const productContractABI = [
     {
       "inputs": [
         {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "users",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "userId",
+          "type": "string"
+        },
+        {
+          "internalType": "bool",
+          "name": "isRegistered",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "constant": true
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_userId",
+          "type": "string"
+        }
+      ],
+      "name": "registerUser",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "loginUser",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "constant": true
+    },
+    {
+      "inputs": [
+        {
           "internalType": "string",
           "name": "_name",
           "type": "string"
@@ -225,9 +302,9 @@ const productContractABI = [
         {
           "components": [
             {
-              "internalType": "address",
-              "name": "commenter",
-              "type": "address"
+              "internalType": "string",
+              "name": "commenterId",
+              "type": "string"
             },
             {
               "internalType": "string",
@@ -344,14 +421,65 @@ window.addEventListener('load', async () => {
     alert("Please install MetaMask.");
   }
 });
+window.ethereum.on('accountsChanged', function (newAccounts) {
+  accounts = newAccounts;
+  console.log('Accounts changed:', accounts);
+  // Optionally reset UI or force logout
+  logout();
+});
 
 function showLogin(role) {
   currentUserRole = role;
   document.getElementById("roleSelectionSection").style.display = "none";
   document.getElementById("loginSection").style.display = "block";
   document.getElementById("loginRoleName").innerText = role.charAt(0).toUpperCase() + role.slice(1);
+
+  // Clear fields
   document.getElementById("username").value = "";
   document.getElementById("password").value = "";
+
+  // Show Register button only for users, not for admin
+  document.getElementById("showRegisterBtn").style.display = (role === "user") ? "inline-block" : "none";
+  
+  // Show login form and hide register form initially
+  document.getElementById("loginForm").style.display = "block";
+  document.getElementById("registerForm").style.display = "none";
+}
+
+function showRegister() {
+  document.getElementById("loginForm").style.display = "none";
+  document.getElementById("registerForm").style.display = "block";
+
+  // Clear register form fields
+  document.getElementById("regUsername").value = "";
+  document.getElementById("regPassword").value = "";
+}
+
+async function registerUser() {
+  const newUsername = document.getElementById("regUsername").value.trim();
+  const newPassword = document.getElementById("regPassword").value.trim();
+
+  if (!newUsername || !newPassword) {
+    alert("Please enter both username and password for registration.");
+    return;
+  }
+
+  try {
+    // Call the contract method with only username (1 param)
+   await productContract.methods.registerUser(newUsername).send({ from: accounts[0] });
+
+
+    alert("Registration successful! You can now log in.");
+
+    // Optionally clear the form and switch back to login
+    document.getElementById("regUsername").value = "";
+    document.getElementById("regPassword").value = "";
+    showLogin(currentUserRole); // assuming this function switches UI
+
+  } catch (error) {
+    console.error("Registration failed:", error);
+    alert("Registration failed. See console for details.");
+  }
 }
 
 function cancelLogin() {
@@ -360,7 +488,7 @@ function cancelLogin() {
   document.getElementById("roleSelectionSection").style.display = "block";
 }
 
-function login() {
+async function login() {
   const username = document.getElementById("username").value.trim();
   const password = document.getElementById("password").value.trim();
 
@@ -371,10 +499,25 @@ function login() {
       alert("Invalid admin credentials");
     }
   } else if (currentUserRole === "user") {
-    if (username && password) {
-      showDashboard();
-    } else {
-      alert("Invalid user credentials");
+    if (!username || !password) {
+      alert("Please enter username and password.");
+      return;
+    }
+
+    try {
+      // Call loginUser() with no arguments, msg.sender = accounts[0]
+      const userId = await productContract.methods.loginUser().call({ from: accounts[0] });
+
+      // Check if returned userId matches username entered
+      if (userId === username) {
+        showDashboard();
+      } else {
+        alert("Invalid username or user not registered.");
+      }
+    } catch (error) {
+      // This will catch require() failures from Solidity, e.g. user not registered
+      alert("Login failed: User not registered or other error.");
+      console.error(error);
     }
   }
 }
@@ -504,8 +647,9 @@ async function loadComments(id) {
     const container = document.getElementById(`comments-${id}`);
     container.innerHTML = "<strong>Reviews:</strong><br>";
     comments.forEach(c => {
-      container.innerHTML += `<p><b>${c.commenter}</b>: ${c.text} [Rating: ${c.rating}]</p>`;
-    });
+    container.innerHTML += `<p><b>${c.commenterId}</b>: ${c.text} [Rating: ${c.rating}]</p>`;
+  });
+
   } catch (error) {
     console.error("Failed to load comments:", error);
   }
@@ -529,5 +673,6 @@ async function deleteProduct(id) {
     console.error(error);
   }
 }
+
 
 
