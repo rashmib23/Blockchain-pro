@@ -1,173 +1,250 @@
-/* --------- Base Body and Typography --------- */
+/* General Styles */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  margin: 30px;
-  background-color: #f4f6f8;
+  margin: 0;
+  padding: 20px;
+  background: #f9f9f9;
   color: #333;
-  line-height: 1.6;
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* Center all content horizontally */
   min-height: 100vh;
-  box-sizing: border-box;
 }
 
 h1, h2 {
-  color: #1f2937;
-  text-align: center; /* Center headings */
+  text-align: center;
+  color: #222;
+  margin-bottom: 20px;
 }
 
-/* --------- Sections --------- */
-section {
-  margin-bottom: 40px;
-  padding: 25px 30px;
-  border: 1px solid #e1e4e8;
-  border-radius: 10px;
-  background: #fff;
-  box-shadow: 0 4px 6px rgb(32 33 36 / 8%);
-  transition: box-shadow 0.3s ease;
-  width: 100%;
-  max-width: 700px; /* Limit width for readability */
-}
-
-section:hover {
-  box-shadow: 0 8px 16px rgb(32 33 36 / 16%);
-}
-
-/* --------- Inputs and Textareas --------- */
-input, textarea {
-  display: block;
-  margin: 10px 0 15px;
-  padding: 10px 12px;
-  width: 100%;
-  max-width: 400px;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  transition: border-color 0.3s ease;
-}
-
-input:focus, textarea:focus {
-  border-color: #3b82f6;
-  outline: none;
-  box-shadow: 0 0 5px rgba(59, 130, 246, 0.5);
-}
-
-/* --------- Buttons --------- */
+/* Buttons */
 button {
-  background-color: #3b82f6;
-  color: white;
-  padding: 12px 20px;
+  background-color: #007bff;
   border: none;
-  border-radius: 6px;
+  color: white;
+  padding: 8px 16px;
+  margin: 5px 3px;
+  border-radius: 5px;
   font-weight: 600;
-  font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
-  max-width: 400px;
-  width: 100%;
 }
 
 button:hover {
-  background: linear-gradient(135deg, #2563eb, #1e3a8a);
-  box-shadow: 0 10px 28px rgba(30, 58, 138, 0.7);
+  background-color: #0056b3;
 }
 
-button:active {
-  background: #1e3a8a;
-  box-shadow: 0 4px 15px rgba(30, 58, 138, 0.8);
-  transform: scale(0.98);
+/* Input Fields & Textareas */
+input[type="text"],
+input[type="password"],
+input[type="number"],
+input[type="file"],
+textarea {
+  width: 100%;
+  max-width: 400px;
+  padding: 8px;
+  margin: 6px 0 15px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+  font-size: 1rem;
+  font-family: inherit;
+  resize: vertical;
 }
 
-/* --------- Products Grid --------- */
+textarea {
+  min-height: 80px;
+}
+
+/* Role Selection Buttons */
+#roleSelectionSection button {
+  width: 140px;
+  font-size: 1.1rem;
+}
+
+/* Navbar */
+#navbar {
+  background-color: #343a40;
+  color: white;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  border-radius: 6px;
+  margin-bottom: 25px;
+  user-select: none;
+}
+
+#navbar span {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+#navbar button {
+  background-color: #495057;
+  padding: 6px 14px;
+}
+
+#navbar button:hover {
+  background-color: #212529;
+}
+
+/* Hide navbar and logout button on Role Selection Page */
+#roleSelectionSection ~ #navbar,
+#roleSelectionSection ~ #logoutSection {
+  display: none !important;
+}
+
+/* Login & Register Forms Container */
+#loginSection {
+  max-width: 420px;
+  margin: 0 auto 40px auto;
+  background: white;
+  padding: 25px 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
+#loginSection label {
+  font-weight: 600;
+}
+
+#loginSection input,
+#loginSection textarea {
+  font-size: 1rem;
+}
+
+/* Admin Section - Add Product */
+#adminSection {
+  max-width: 500px;
+  margin: 0 auto 40px auto;
+  background: white;
+  padding: 25px 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
+#adminSection label {
+  font-weight: 600;
+}
+
+/* Product List Section */
+#productListSection {
+  max-width: 960px;
+  margin: 0 auto 40px auto;
+}
+
+/* Products Container Grid */
 #products {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 40px;
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto; /* Center the grid */
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
 }
 
+/* Single Product Card */
 .product {
-  background-color: #fff;
-  border: 1px solid #e2e8f0;
+  background: white;
   border-radius: 12px;
-  padding: 25px;
-  box-shadow: 0 6px 12px rgba(0,0,0,0.06);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  font-size: 1.05rem;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  padding: 15px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: box-shadow 0.3s ease;
 }
 
 .product:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+}
+
+.product h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  color: #222;
+  font-weight: 700;
+  text-align: center;
 }
 
 .product img {
   max-width: 100%;
-  max-height: 240px;
-  border-radius: 10px;
-  object-fit: cover;
-  margin-bottom: 15px;
+  height: 200px;
+  object-fit: contain;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  background-color: #f7f7f7;
 }
 
-.product h3 {
-  margin: 0;
-  font-size: 1.4rem;
-  color: #111827;
-}
-
-.product .desc {
-  margin: 10px 0;
-  font-size: 1.05rem;
-  color: #4b5563;
-  line-height: 1.5;
-}
-
-.product .price {
-  color: #16a34a;
-  font-size: 1.2rem;
-  font-weight: bold;
-  margin-bottom: 8px;
+.product p {
+  font-size: 0.9rem;
+  color: #555;
+  margin: 5px 0;
+  text-align: center;
 }
 
 .product .rating {
-  font-weight: bold;
-  font-size: 1.1rem;
-  color: #f59e0b;
+  font-weight: 600;
+  color: #ff9900;
+  margin-bottom: 12px;
 }
 
-/* --------- Responsive --------- */
-@media (max-width: 480px) {
-  body {
-    margin: 15px;
-  }
+/* Review Section inside product */
+.product textarea,
+.product input[type="number"] {
+  width: 90%;
+  margin: 5px 0;
+  font-size: 0.9rem;
+}
 
-  section {
-    padding: 15px 20px;
-  }
+.product button {
+  align-self: center;
+  margin-top: 8px;
+}
 
-  input, textarea, button {
-    max-width: 100%;
-    max-height: 220px;
-  }
+/* Comments container */
+.product div[id^="comments-"] {
+  max-height: 120px;
+  overflow-y: auto;
+  background-color: #f0f0f0;
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin-top: 12px;
+  font-size: 0.85rem;
+  color: #333;
+}
 
-  .product h3 {
-    font-size: 2.05 rem;
-  }
+/* Scrollbar styling for comments */
+.product div[id^="comments-"]::-webkit-scrollbar {
+  width: 6px;
+}
 
-  .product p {
-    font-size: 2.05rem;
-  }
+.product div[id^="comments-"]::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 3px;
+}
 
-  .product .price {
-    font-size: 2.3rem;
-  }
+/* Logout Section Button Styling */
+#logoutSection {
+  max-width: 400px;
+  margin: 20px auto 0 auto;
+  text-align: center;
+}
 
+#logoutSection button {
+  width: 100%;
+  font-size: 1rem;
+  background-color: #dc3545;
+}
+
+#logoutSection button:hover {
+  background-color: #b02a37;
+}
+
+/* Responsive tweaks */
+@media (max-width: 700px) {
   #products {
     grid-template-columns: 1fr;
+  }
+  
+  #loginSection, #adminSection {
+    padding: 15px 20px;
   }
 }
 
