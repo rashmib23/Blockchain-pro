@@ -3,7 +3,7 @@ let productContract;
 let accounts;
 let currentUserRole = ""; // 'admin' or 'user'
 
-const productContractAddress =  "0x28504341F262a388E71ca592c25F860389b0f925"
+const productContractAddress =  "0x51d563264122047D374B7C93700CEa8505a54F85"
 const productContractABI = [
     {
       "inputs": [],
@@ -420,6 +420,12 @@ window.addEventListener('load', async () => {
   } else {
     alert("Please install MetaMask.");
   }
+});
+window.ethereum.on('accountsChanged', function (newAccounts) {
+  accounts = newAccounts;
+  console.log('Accounts changed:', accounts);
+  // Optionally reset UI or force logout
+  logout();
 });
 
 function showLogin(role) {
